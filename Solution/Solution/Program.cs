@@ -9,9 +9,10 @@ and Service Requests, which have their own subset of Types of Requests (an Enum)
 We can assume that more special types of tickets will be added later.
  */
 Ticket ticket = new BugReport();
-ticket.CalculationContext.PerformBreachDeadlineCalculation(TicketPriority.High, ticket.ServiceLevelAgreement);
+ticket.CalculationContext.PerformResponseDeadlineCalculation(TicketPriority.High, ticket.ServiceLevelAgreement);
 ticket = new WhiteGloveClient(ticket);
-Console.WriteLine(ticket.BreachDeadline());
+Console.WriteLine(ticket.ResponseDeadline());
+Console.ReadLine();
 public abstract class Ticket
 {
     public virtual int Id { get; set; }
@@ -56,6 +57,7 @@ public class BugReport : Ticket //Bug Reports (which must track Error Codes and 
     public BugReport()
     {
         CalculationContext = new BugReportContext();
+        ServiceLevelAgreement = new ServiceLevelAgreement();
     }
 }
 public class ServiceRequest : Ticket //Service Requests, which have their own subset of Types of Requests (an Enum)
@@ -64,6 +66,7 @@ public class ServiceRequest : Ticket //Service Requests, which have their own su
     public ServiceRequest()
     {
         CalculationContext = new ServiceRequestContext();
+        ServiceLevelAgreement = new ServiceLevelAgreement();
     }
 }
 //Strategies
@@ -81,7 +84,7 @@ public class BugReportCalculationStrategy : ICalculationStrategy
         //the Response Deadline is calculated, then, to 2 hours.
         if(priority == TicketPriority.High)
         {
-
+            serviceLevelAgreement.ResponseDeadline = 1 * 2; //for a Bug Report, the multiplier is 2:
         }
         else if(priority == TicketPriority.Medium)
         {
@@ -97,7 +100,6 @@ public class BugReportCalculationStrategy : ICalculationStrategy
         //implement accordingly
         if (priority == TicketPriority.High)
         {
-            serviceLevelAgreement.ResponseDeadline = 1 * 2; //for a Bug Report, the multiplier is 2:
         }
         else if (priority == TicketPriority.Medium)
         {
