@@ -1,4 +1,5 @@
 ﻿/*
+1.
 Right now, your application tracks the "Type" of a ticket with a data table related to the Ticket in question. 
 It has been decided that this is not sufficient. All Tickets will share the same properties as those described in the original spec,
 but each ticket will now belong to a special type, which will have its own special data.
@@ -8,7 +9,7 @@ and Service Requests, which have their own subset of Types of Requests (an Enum)
 We can assume that more special types of tickets will be added later.
  */
 Ticket ticket = new BugReport();
-ticket.CalculationContext.PerformBreachDeadlineCalculation(TicketPriority.High);
+ticket.CalculationContext.PerformBreachDeadlineCalculation(TicketPriority.High, ticket.ServiceLevelAgreement);
 ticket = new WhiteGloveClient(ticket);
 Console.WriteLine(ticket.BreachDeadline());
 public abstract class Ticket
@@ -68,29 +69,53 @@ public class ServiceRequest : Ticket //Service Requests, which have their own su
 //Strategies
 public interface ICalculationStrategy 
 {
-    public void CalculateResponseDeadline(TicketPriority priority);
-    public void CalculateBreachDeadline(TicketPriority priority);
+    public void CalculateResponseDeadline(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement);
+    public void CalculateBreachDeadline(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement);
 }
 public class BugReportCalculationStrategy : ICalculationStrategy
 {
-    public void CalculateResponseDeadline(TicketPriority priority)
+    public void CalculateResponseDeadline(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
         //implement accordingly
         //For example, a High Priority ticket might have a base Response Deadline of 1 hour, and for a Bug Report, the multiplier is 2: 
         //the Response Deadline is calculated, then, to 2 hours.
+        if(priority == TicketPriority.High)
+        {
+
+        }
+        else if(priority == TicketPriority.Medium)
+        {
+
+        }
+        else if(priority == TicketPriority.Low)
+        {
+
+        }
     }
-    public void CalculateBreachDeadline(TicketPriority priority)
+    public void CalculateBreachDeadline(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
         //implement accordingly
+        if (priority == TicketPriority.High)
+        {
+            serviceLevelAgreement.ResponseDeadline = 1 * 2; //for a Bug Report, the multiplier is 2:
+        }
+        else if (priority == TicketPriority.Medium)
+        {
+
+        }
+        else if (priority == TicketPriority.Low)
+        {
+
+        }
     }
 }
 public class ServiceRequestCalculationStrategy : ICalculationStrategy
 {
-    public void CalculateResponseDeadline(TicketPriority priority)
+    public void CalculateResponseDeadline(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
         //implement accordingly
     }
-    public void CalculateBreachDeadline(TicketPriority priority)
+    public void CalculateBreachDeadline(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
         //implement accordingly
     }
@@ -100,13 +125,13 @@ public abstract class CalculationContext
 {
     public ICalculationStrategy CalculationStrategy { get; set; }
     public TicketPriority Priority { get; set; }
-    public void PerformResponseDeadlineCalculation(TicketPriority priority)
+    public void PerformResponseDeadlineCalculation(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
-        CalculationStrategy.CalculateResponseDeadline(priority);
+        CalculationStrategy.CalculateResponseDeadline(priority, serviceLevelAgreement);
     }
-    public void PerformBreachDeadlineCalculation(TicketPriority priority)
+    public void PerformBreachDeadlineCalculation(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
-        CalculationStrategy.CalculateBreachDeadline(priority);
+        CalculationStrategy.CalculateBreachDeadline(priority, serviceLevelAgreement);
     }
 }
 public class ServiceRequestContext : CalculationContext
