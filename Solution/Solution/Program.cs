@@ -124,7 +124,6 @@ public class ServiceRequestCalculationStrategy : ICalculationStrategy
 public abstract class CalculationContext
 {
     public ICalculationStrategy CalculationStrategy { get; set; }
-    public TicketPriority Priority { get; set; }
     public void PerformResponseDeadlineCalculation(TicketPriority priority, ServiceLevelAgreement serviceLevelAgreement)
     {
         CalculationStrategy.CalculateResponseDeadline(priority, serviceLevelAgreement);
@@ -176,6 +175,7 @@ public class ServiceLevelAgreement
     public double ResponseDeadline { get; set; }
     public double BreachDeadline { get; set; }
 }
+//Decorator Pattern
 public abstract class Modifier : Ticket
 {
     public Ticket Ticket { get; set; }
